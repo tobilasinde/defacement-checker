@@ -23,7 +23,8 @@ echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
 http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" \
 | tee /etc/apt/sources.list.d/nginx.list
 apt update
-apt-get install -y nginx-module-njs
+apt-get install -y nginx-module-njs-dbg
+# nginx-module-njs
 
 nginx_path=/etc/nginx
 while [ ! -f $nginx_path/nginx.conf  ]

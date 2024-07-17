@@ -9,6 +9,13 @@ const generateHash = (text) => {
 let res = ''
 let initalHash = null
 function verify(r, data, flag) {
+	r.log('r.log')
+	r.warn('r.warn')
+	r.error('r.error')
+	console.log('console.log')
+	console.info('console.info')
+	console.error('console.error')
+	ngx.log(ngx.ERR, 'ngx.log')
 	res += data
 	if (
 		!initalHash &&
