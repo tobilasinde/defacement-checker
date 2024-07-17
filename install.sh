@@ -31,7 +31,7 @@ while [ ! -f $nginx_path/nginx.conf  ]
 do
     read -p "Enter correct path for nginx.conf [ ie. /etc/nginx ]: " nginx_path
 done
-njs_path=$nginx_path/njs/
+njs_path=$nginx_path/njs
 sed -i "s|.*installation_path=.*|installation_path=$njs_path|" tony_njs.sh
 sed -i "s|/etc/nginx/njs|$njs_path|" verify.js
 if ! grep -Fq "load_module modules/ngx_http_js_module.so;" $nginx_path/nginx.conf

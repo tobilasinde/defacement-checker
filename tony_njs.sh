@@ -5,12 +5,12 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     exit
 fi
 
-installation_path=/etc/nginx/njs/
+installation_path=/etc/nginx/njs
 url=$1
 path=$2
 while [ -z $url ]
 do
-    read -p "Enter url [ example.com ]: " url
+    read -p "Enter url [ unique_app_name/url ]: " url
 done
 while [ -z $path ] || [ ! -d $path ]
 do
