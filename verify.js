@@ -9,20 +9,10 @@ const generateHash = (text) => {
 let res = ''
 let initalHash = null
 function verify(r, data, flag) {
-	r.log('r.log')
-	r.warn('r.warn')
-	r.error('r.error')
-	console.log('console.log')
-	console.info('console.info')
-	console.error('console.error')
-	ngx.log(ngx.ERR, 'ngx.log')
 	res += data
-	if (
-		!initalHash &&
-		r.variables['app_name'] &&
-		fs.existsSync(`./njs/hashes/${r.variables['app_name']}.json`)
-	) {
-		var file = fs.readFileSync(`./njs/hashes/${r.variables['app_name']}.json`)
+	const file_path = `/etc/nginx/njs/hashes/${r.variables['app_name']}.json`
+	if (!initalHash && r.variables['app_name'] && fs.existsSync(file_path)) {
+		var file = fs.readFileSync(file_path)
 		file = file.toString()
 		file = JSON.parse(file)
 		if (file[r.uri]) initalHash = file[r.uri]

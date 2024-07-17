@@ -32,6 +32,8 @@ do
     read -p "Enter correct path for nginx.conf [ ie. /etc/nginx ]: " nginx_path
 done
 njs_path=$nginx_path/njs/
+sed -i "s|.*installation_path=.*|installation_path=$njs_path|" tony_njs.sh
+sed -i "s|/etc/nginx/njs|$njs_path|" verify.js
 if ! grep -Fq "load_module modules/ngx_http_js_module.so;" $nginx_path/nginx.conf
 then
     echo -e "load_module modules/ngx_http_js_module.so;\n$(cat $nginx_path/nginx.conf)" > $nginx_path/nginx.conf
@@ -51,6 +53,5 @@ fi
 if [ ! -d "$njs_path/hashes" ]; then
     mkdir $njs_path/hashes
 fi
-sed -i "s|.*installation_path=.*|installation_path=$njs_path|" tony_njs.sh
 chmod +x tony_njs.sh
 cp ./tony_njs.sh /usr/bin/tony_njs
