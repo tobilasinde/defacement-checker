@@ -13,6 +13,9 @@ do
     read -p "Webserver[ nginx/apache ]: " WEBSERVER
 done
 TDC_DIR=/usr/lib/tdc
+sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" tdc.sh
+sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" ./tdc/functions.js
+sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" ./tdc/verify.js
 if [ ! -d "$TDC_DIR" ]; then
     mkdir $TDC_DIR
 fi
@@ -47,8 +50,6 @@ if [ $WEBSERVER = "nginx" ]; then
     apt-get install -y nginx-module-njs-dbg
     # nginx-module-njs
     NGINX_DIR=$(nginx -V 2>&1 | grep -o '\-\-conf-path=\(.*conf\)' | cut -d '=' -f2)
-    sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" tdc.sh
-    sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" ./tdc/functions.js
     if ! grep -Fq "load_module modules/ngx_http_js_module.so;" $NGINX_DIR
     then
         echo -e "load_module modules/ngx_http_js_module.so;\n$(cat $NGINX_DIR)" > $NGINX_DIR
@@ -79,8 +80,7 @@ if [ $WEBSERVER = "apache" ]; then
         apt-get install -y apache2-dev 
     fi
     APACHE_DIR=$(apache2 -V 2>&1 | grep -o '\-D HTTPD_ROOT=\(.*\)' | cut -d '=' -f2)/$(apache2 -V 2>&1 | grep -o '\-D SERVER_CONFIG_FILE=\(.*conf\)' | cut -d '=' -f2)
-    sed -i "s|.*char *tdc_dir =.*|char *tdc_dir = $TDC_DIR|" tdc.sh
-    sed -i "s|.*const TDC_DIR =.*|const TDC_DIR = $TDC_DIR|" ./tdc/functions.js
+    sed -i "s|.*char *tdc_dir =.*|char *tdc_dir = $TDC_DIR|" ./apache/mode_tdc.c
     apxs -i -a -c ./apache/mod_tdc.c
     systemctl restart apache2
 fi

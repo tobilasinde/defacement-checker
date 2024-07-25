@@ -1,6 +1,7 @@
 import fs from 'fs'
 import crypto from 'crypto'
 
+const TDC_DIR = '/usr/lib/tdc'
 const generateHash = (text) => {
 	const hash = crypto.createHash('sha256')
 	hash.update(text)
@@ -8,7 +9,7 @@ const generateHash = (text) => {
 }
 const getInitialHash = (filename, root) => {
 	root = root.replace(/\//g, '_')
-	const file_path = `/etc/nginx/njs/hashes/${root}.json`
+	const file_path = `${TDC_DIR}/hashes/${root}.json`
 	if (fs.existsSync(file_path)) {
 		var file = fs.readFileSync(file_path)
 		file = file.toString()
