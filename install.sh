@@ -5,7 +5,7 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     exit
 fi
 WEBSERVER=""
-if [ $# -ge 1 ] && [ -n $1]; then
+if [ $# -ge 1 ] && [ -n "$1"]; then
     WEBSERVER=$1
 fi
 if [ -z $1 ]; then
