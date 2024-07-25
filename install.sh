@@ -80,7 +80,7 @@ if [ $WEBSERVER = "apache" ]; then
         apt-get install -y apache2-dev 
     fi
     APACHE_DIR=$(apache2 -V 2>&1 | grep -o '\-D HTTPD_ROOT=\(.*\)' | cut -d '=' -f2)/$(apache2 -V 2>&1 | grep -o '\-D SERVER_CONFIG_FILE=\(.*conf\)' | cut -d '=' -f2)
-    sed -i "s|.*char *tdc_dir =.*|char *tdc_dir = $TDC_DIR|" ./apache/mode_tdc.c
+    sed -i "s|.*char *tdc_dir =.*|char *tdc_dir = $TDC_DIR|" ./apache/mod_tdc.c
     apxs -i -a -c ./apache/mod_tdc.c
     systemctl restart apache2
 fi
