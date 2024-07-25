@@ -38,7 +38,7 @@ if [ $WEBSERVER = "nginx" ]; then
     # nginx-module-njs
     NGINX_DIR=$(nginx -V 2>&1 | grep -o '\-\-conf-path=\(.*conf\)' | cut -d '=' -f2)
     sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" tdc.sh
-    sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" tdc/function.js
+    sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" ./tdc/function.js
     if ! grep -Fq "load_module modules/ngx_http_js_module.so;" $NGINX_DIR
     then
         echo -e "load_module modules/ngx_http_js_module.so;\n$(cat $NGINX_DIR)" > $NGINX_DIR
@@ -62,7 +62,7 @@ if [ $WEBSERVER = "apache" ]; then
     fi
     APACHE_DIR=$(apache2 -V 2>&1 | grep -o '\-D HTTPD_ROOT=\(.*\)' | cut -d '=' -f2)/$(apache2 -V 2>&1 | grep -o '\-D SERVER_CONFIG_FILE=\(.*conf\)' | cut -d '=' -f2)
     sed -i "s|.*char *tdc_dir =.*|char *tdc_dir = $TDC_DIR|" tdc.sh
-    sed -i "s|.*const TDC_DIR =.*|const TDC_DIR = $TDC_DIR|" tdc/function.js
+    sed -i "s|.*const TDC_DIR =.*|const TDC_DIR = $TDC_DIR|" ./tdc/function.js
     apxs -i -a -c ./apache/mod_tdc.c
 fi
 
