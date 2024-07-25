@@ -5,7 +5,7 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     exit
 fi
 WEBSERVER=""
-if [ $# -ge 1 ] && [ -n "$1"]; then
+if [ $# -ge 1 ] && [ -n "$1" ]; then
     WEBSERVER=$1
 fi
 while [ -z $WEBSERVER ] || [ ! $WEBSERVER = "nginx" -a ! $WEBSERVER = "apache" ]
@@ -51,6 +51,7 @@ if [ $WEBSERVER = "nginx" ]; then
     then
         sed -i -e '/http {/a js_path $TDC_DIR;'$'\n' $NGINX_DIR
     fi
+    systemctl restart nginx
 fi
 if [ $WEBSERVER = "apache" ]; then
     echo "Checking apache installation"
@@ -64,6 +65,7 @@ if [ $WEBSERVER = "apache" ]; then
     sed -i "s|.*char *tdc_dir =.*|char *tdc_dir = $TDC_DIR|" tdc.sh
     sed -i "s|.*const TDC_DIR =.*|const TDC_DIR = $TDC_DIR|" ./tdc/functions.js
     apxs -i -a -c ./apache/mod_tdc.c
+    systemctl restart apache2
 fi
 
 if [ ! -d "$TDC_DIR" ]; then
