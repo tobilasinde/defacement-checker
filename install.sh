@@ -45,13 +45,20 @@ if [ $WEBSERVER = "nginx" ]; then
     fi
     if ! grep -Fq "js_import main from verify.js;" $NGINX_DIR
     then
-        sed -i '/http {/a\   js_import main from verify.js;'$'\n' $NGINX_DIR
+        sed -i '/http {/a\   js_import main from verify.js;' $NGINX_DIR
     fi
-    if ! grep -Fq "js_path $TDC_DIR;" $NGINX_DIR
+    if ! grep -Fq "js_path $TDC_DIR/;" $NGINX_DIR
     then
-        sed -i "/http {/a\   js_path $TDC_DIR;" $NGINX_DIR
+        sed -i "/http {/a\   js_path $TDC_DIR/;" $NGINX_DIR
     fi
     systemctl restart nginx
+    echo "----- Installation completed -----"
+    echo 'run "tdc generate /path/to/your/site" to generate hashes'
+    # echo 'run "tdc check /path/to/your/app" to check for defacement'
+    echo 'add the following line to each location block of your site server block'
+    echo 'js_header_filter main.header;'
+    echo 'js_body_filter main.verify;'
+    echo 'run "systemctl restart nginx" to apply changes'
 fi
 if [ $WEBSERVER = "apache" ]; then
     echo "Checking apache installation"

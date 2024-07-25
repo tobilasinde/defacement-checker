@@ -5,7 +5,8 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
 fi
 
 TDC_DIR=/usr/lib/tdc
-SITE_DIR=$1
+COMMAND=$1
+SITE_DIR=$2
 while [ -z $SITE_DIR ] || [ ! -d $SITE_DIR ]
 do
     read -p "Enter site directory [ /var/www/.../your_app ]: " SITE_DIR
