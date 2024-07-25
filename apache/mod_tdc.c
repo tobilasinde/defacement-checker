@@ -62,10 +62,10 @@ static int tdc_handler(request_rec *r)
     rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT, r->pool);
     if (rc == APR_SUCCESS) {
         char *node = "node ";
-        char *tdc_dir = "";
+        char *tdc_dir = "/usr/lib/tdc/functions.js";
         char *full_command = malloc(strlen(node) + strlen(tdc_dir) + strlen(filename) + strlen(uri) + 3);
         strcpy(full_command, node);
-        strcpy(full_command, tdc_dir);
+        strcat(full_command, tdc_dir);
         strcat(full_command, " ");
         strcat(full_command, filename);
         strcat(full_command, " ");
