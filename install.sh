@@ -12,6 +12,17 @@ while [ -z $WEBSERVER ] || [ ! $WEBSERVER = "nginx" -a ! $WEBSERVER = "apache" ]
 do
     read -p "Webserver[ nginx/apache ]: " WEBSERVER
 done
+TDC_DIR=/usr/lib/tdc
+if [ ! -d "$TDC_DIR" ]; then
+    mkdir $TDC_DIR
+fi
+if [ ! -d "$TDC_DIR/hashes" ]; then
+    mkdir $TDC_DIR/hashes
+fi
+cp -r ./tdc/* $TDC_DIR
+chmod +x tdc.sh
+cp ./tdc.sh /usr/bin/tdc
+
 echo "Checking node.js installation"
 if ! command -v node &> /dev/null; then
     if ! command -v curl &> /dev/null; then
@@ -22,7 +33,6 @@ if ! command -v node &> /dev/null; then
     apt-get install -y nodejs
     echo "Node.js installed"
 fi
-TDC_DIR=/usr/lib/tdc
 if [ $WEBSERVER = "nginx" ]; then
     echo "Checking nginx installation"
     if ! command -v nginx &> /dev/null; then
@@ -74,13 +84,3 @@ if [ $WEBSERVER = "apache" ]; then
     apxs -i -a -c ./apache/mod_tdc.c
     systemctl restart apache2
 fi
-
-if [ ! -d "$TDC_DIR" ]; then
-    mkdir $TDC_DIR
-fi
-if [ ! -d "$TDC_DIR/hashes" ]; then
-    mkdir $TDC_DIR/hashes
-fi
-cp -r ./tdc/* $TDC_DIR
-chmod +x tdc.sh
-cp ./tdc.sh /usr/bin/tdc
