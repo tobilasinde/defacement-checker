@@ -4,8 +4,14 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     echo "Not running as root"
     exit
 fi
-WEBSERVER=$1
-while [ -z $WEBSERVER ] || [ !$WEBSERVER = "nginx" ] || [ !$WEBSERVER = "apache" ]
+WEBSERVER=""
+if [ $# -ge 1 ] && [ -n $1]; then
+    WEBSERVER=$1
+fi
+if [ -z $1 ]; then
+    read -p "Webserver[ nginx/apache ]: " WEBSERVER
+fi
+while [ -z $WEBSERVER ] || [ ! $WEBSERVER = "nginx" -a ! $WEBSERVER = "apache" ]
 do
     read -p "Webserver[ nginx/apache ]: " WEBSERVER
 done
@@ -40,9 +46,13 @@ if [ $WEBSERVER = "nginx" ]; then
     then
         echo -e "load_module modules/ngx_http_js_module.so;\n$(cat $NGINX_DIR)" > $NGINX_DIR
     fi
-    if ! grep -Fq "js_import main from njs/verify.js;" $NGINX_DIR
+    if ! grep -Fq "js_import main from verify.js;" $NGINX_DIR
     then
-        sed -i -e '/http {/a js_import main from njs/verify.js;'$'\n' $NGINX_DIR
+        sed -i -e '/http {/a js_import main from verify.js;'$'\n' $NGINX_DIR
+    fi
+    if ! grep -Fq "js_path $TDC_DIR;" $NGINX_DIR
+    then
+        sed -i -e '/http {/a js_path $TDC_DIR;'$'\n' $NGINX_DIR
     fi
 fi
 if [ $WEBSERVER = "apache" ]; then
@@ -54,8 +64,8 @@ if [ $WEBSERVER = "apache" ]; then
         apt-get install -y apache2-dev 
     fi
     APACHE_DIR=$(apache2 -V 2>&1 | grep -o '\-D HTTPD_ROOT=\(.*\)' | cut -d '=' -f2)/$(apache2 -V 2>&1 | grep -o '\-D SERVER_CONFIG_FILE=\(.*conf\)' | cut -d '=' -f2)
-    sed -i "s|.*char *tdc_dir =.*|char *tdc_dir = $njs_path|" tdc.sh
-    sed -i "s|.*const TDC_DIR =.*|const TDC_DIR = $njs_path|" function.js
+    sed -i "s|.*char *tdc_dir =.*|char *tdc_dir = $TDC_DIR|" tdc.sh
+    sed -i "s|.*const TDC_DIR =.*|const TDC_DIR = $TDC_DIR|" function.js
     apxs -i -a -c ./apache/mod_tdc.c
 fi
 
