@@ -8,9 +8,6 @@ WEBSERVER=""
 if [ $# -ge 1 ] && [ -n "$1"]; then
     WEBSERVER=$1
 fi
-if [ -z $1 ]; then
-    read -p "Webserver[ nginx/apache ]: " WEBSERVER
-fi
 while [ -z $WEBSERVER ] || [ ! $WEBSERVER = "nginx" -a ! $WEBSERVER = "apache" ]
 do
     read -p "Webserver[ nginx/apache ]: " WEBSERVER
