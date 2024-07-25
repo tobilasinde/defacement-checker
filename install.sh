@@ -72,6 +72,6 @@ fi
 if [ ! -d "$TDC_DIR/hashes" ]; then
     mkdir $TDC_DIR/hashes
 fi
-cp -r ./src/* $TDC_DIR
+cp -r ./tdc/* $TDC_DIR
 chmod +x tdc.sh
 cp ./tdc.sh /usr/bin/tdc
