@@ -45,11 +45,11 @@ if [ $WEBSERVER = "nginx" ]; then
     fi
     if ! grep -Fq "js_import main from verify.js;" $NGINX_DIR
     then
-        sed -i -e '/http {/a js_import main from verify.js;'$'\n' $NGINX_DIR
+        sed -i '/http {/a\   js_import main from verify.js;'$'\n' $NGINX_DIR
     fi
     if ! grep -Fq "js_path $TDC_DIR;" $NGINX_DIR
     then
-        sed -i "|http {|a js_path $TDC_DIR;"$'\n' $NGINX_DIR
+        sed -i "/http {/a\   js_path $TDC_DIR;" $NGINX_DIR
     fi
     systemctl restart nginx
 fi
