@@ -40,7 +40,7 @@ static int tdc_handler(request_rec *r)
     apr_size_t readBytes;
     
     // Check that the "example-handler" handler is being called.
-    if (!r->handler || strcmp(r->handler, "example-handler")) return (DECLINED);
+    if (!r->handler || strcmp(r->handler, "tdc-handler")) return (DECLINED);
     
     // Figure out which file is being requested by removing the .sum from it
     filename = apr_pstrdup(r->pool, r->filename);
