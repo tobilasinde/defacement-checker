@@ -1,10 +1,16 @@
 #!/bin/bash
 set -eu
 if [[ $(/usr/bin/id -u) -ne 0 ]]; then
-    echo "Not running as root"
+    echo "Permission denied"
     exit
 fi
 WEBSERVER=""
+ADMIN_EMAIL=""
+MAIL_HOST=""
+MAIL_PASSWORD=""
+MAIL_PORT=""
+MAIL_USERNAME=""
+MAIL_FROM_NAME=""
 if [ $# -ge 1 ] && [ -n "$1" ]; then
     WEBSERVER=$1
 fi
@@ -12,19 +18,48 @@ while [ -z $WEBSERVER ] || [ ! $WEBSERVER = "nginx" -a ! $WEBSERVER = "apache" ]
 do
     read -p "Webserver[ nginx/apache ]: " WEBSERVER
 done
-TDC_DIR=/usr/lib/tdc
-sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" tdc.sh
-sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" ./tdc/functions.js
-sed -i "s|.*TDC_DIR=.*|TDC_DIR=$TDC_DIR|" ./tdc/verify.js
-if [ ! -d "$TDC_DIR" ]; then
-    mkdir $TDC_DIR
+while [ -z $ADMIN_EMAIL ]
+do
+    read -p "Enter the server admin email: " ADMIN_EMAIL
+done
+while [ -z $MAIL_HOST ]
+do
+    read -p "Enter your mail host: " MAIL_HOST
+done
+while [ -z $MAIL_PASSWORD ]
+do
+    read -p "Enter your mail password: " MAIL_PASSWORD
+done
+while [ -z $MAIL_PORT ]
+do
+    read -p "Enter your mail port number: " MAIL_PORT
+done
+while [ -z $MAIL_USERNAME ]
+do
+    read -p "Enter your mail username: " MAIL_USERNAME
+done
+while [ -z $MAIL_FROM_NAME ]
+do
+    read -p "Enter your mail from name: " MAIL_FROM_NAME
+done
+WDD_DIR=/usr/lib/wdd
+sed -i "s|.*WDD_DIR=.*|WDD_DIR=$WDD_DIR|" wdd.sh
+sed -i "s|.*WDD_DIR=.*|WDD_DIR=$WDD_DIR|" ./wdd/verificationService.mjs
+sed -i "s|.*const email = .*|const email = '$ADMIN_EMAIL'|" ./wdd/notification.js
+sed -i "s|.*MAIL_HOST: .*|MAIL_HOST: '$MAIL_HOST',|" ./wdd/notification.js
+sed -i "s|.*MAIL_PASSWORD: .*|MAIL_PASSWORD: '$MAIL_PASSWORD',|" ./wdd/notification.js
+sed -i "s|.*MAIL_PORT: .*|MAIL_PORT: $MAIL_PORT,|" ./wdd/notification.js
+sed -i "s|.*MAIL_USERNAME: .*|MAIL_USERNAME: '$MAIL_USERNAME',|" ./wdd/notification.js
+sed -i "s|.*MAIL_FROM_NAME: .*|MAIL_FROM_NAME: '$MAIL_FROM_NAME'|" ./wdd/notification.js
+if [ ! -d "$WDD_DIR" ]; then
+    mkdir $WDD_DIR
 fi
-if [ ! -d "$TDC_DIR/hashes" ]; then
-    mkdir $TDC_DIR/hashes
+if [ ! -d "$WDD_DIR/hashes" ]; then
+    mkdir $WDD_DIR/hashes
 fi
-cp -r ./tdc/* $TDC_DIR
-chmod +x tdc.sh
-cp ./tdc.sh /usr/bin/tdc
+cp -r ./wdd/* $WDD_DIR
+chmod +x wdd.sh
+cp ./wdd.sh /usr/bin/wdd
 
 echo "Checking node.js installation"
 if ! command -v node &> /dev/null; then
@@ -54,18 +89,18 @@ if [ $WEBSERVER = "nginx" ]; then
     then
         echo -e "load_module modules/ngx_http_js_module.so;\n$(cat $NGINX_DIR)" > $NGINX_DIR
     fi
-    if ! grep -Fq "js_import main from verify.js;" $NGINX_DIR
+    if ! grep -Fq "js_import main from njs.js;" $NGINX_DIR
     then
-        sed -i '/http {/a\   js_import main from verify.js;' $NGINX_DIR
+        sed -i '/http {/a\   js_import main from njs.js;' $NGINX_DIR
     fi
-    if ! grep -Fq "js_path $TDC_DIR/;" $NGINX_DIR
+    if ! grep -Fq "js_path $WDD_DIR/;" $NGINX_DIR
     then
-        sed -i "/http {/a\   js_path $TDC_DIR/;" $NGINX_DIR
+        sed -i "/http {/a\   js_path $WDD_DIR/;" $NGINX_DIR
     fi
     systemctl restart nginx
     echo "----- Installation completed -----"
-    echo 'run "tdc generate /path/to/your/site" to generate hashes'
-    # echo 'run "tdc check /path/to/your/app" to check for defacement'
+    echo 'run "wdd generate /path/to/your/site" to generate hashes'
+    # echo 'run "wdd check /path/to/your/app" to check for defacement'
     echo 'add the following line to each location block of your site server block'
     echo 'js_header_filter main.header;'
     echo 'js_body_filter main.verify;'
@@ -79,8 +114,7 @@ if [ $WEBSERVER = "apache" ]; then
     if ! command -v apache2-dev &> /dev/null; then
         apt-get install -y apache2-dev 
     fi
-    APACHE_DIR=$(apache2 -V 2>&1 | grep -o '\-D HTTPD_ROOT=\(.*\)' | cut -d '=' -f2)/$(apache2 -V 2>&1 | grep -o '\-D SERVER_CONFIG_FILE=\(.*conf\)' | cut -d '=' -f2)
-    sed -i "s|.*char \*tdc_dir =.*|        char *tdc_dir = \"$TDC_DIR/functions.js\";|" ./apache/mod_tdc.c
-    apxs -i -a -c ./apache/mod_tdc.c
+    sed -i "s|.*char \*wdd_dir =.*|        char *wdd_dir = \"$WDD_DIR/apache.mjs\";|" ./apache/mod_wdd.c
+    apxs -i -a -c ./apache/mod_wdd.c
     systemctl restart apache2
 fi

@@ -7,11 +7,11 @@
 
 /* Define prototypes of our functions in this module */
 static void register_hooks(apr_pool_t *pool);
-static int tdc_handler(request_rec *r);
+static int wdd_handler(request_rec *r);
 
 /* Define our module as an entity and assign a function for registering hooks  */
-
-module AP_MODULE_DECLARE_DATA   tdc_module =
+AP_DECLARE(const char *) ap_document_root(request_rec *r);
+module AP_MODULE_DECLARE_DATA   wdd_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,            // Per-directory configuration handler
@@ -28,19 +28,19 @@ static void register_hooks(apr_pool_t *pool)
 {
     
     /* Hook the request handler */
-    ap_hook_handler(tdc_handler, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_handler(wdd_handler, NULL, NULL, APR_HOOK_LAST);
 }
 
-static int tdc_handler(request_rec *r)
+static int wdd_handler(request_rec *r)
 {
     int rc, exists;
     apr_finfo_t finfo;
     apr_file_t* file;
-    char *filename, *uri;
+    char *filename, *uri, *path_info, *unparsed_uri;
     apr_size_t readBytes;
     
     // Check that the "example-handler" handler is being called.
-    if (!r->handler || strcmp(r->handler, "tdc-handler")) return (DECLINED);
+    if (!r->handler || strcmp(r->handler, "wdd-handler")) return (DECLINED);
     
     // Figure out which file is being requested by removing the .sum from it
     filename = apr_pstrdup(r->pool, r->filename);
@@ -62,10 +62,10 @@ static int tdc_handler(request_rec *r)
     rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT, r->pool);
     if (rc == APR_SUCCESS) {
         char *node = "node ";
-        char *tdc_dir = "/usr/lib/tdc/functions.js";
-        char *full_command = malloc(strlen(node) + strlen(tdc_dir) + strlen(filename) + strlen(uri) + 3);
+        char *wdd_dir = "/usr/lib/wdd/apache.mjs";
+        char *full_command = malloc(strlen(node) + strlen(wdd_dir) + strlen(filename) + strlen(uri) + 3);
         strcpy(full_command, node);
-        strcat(full_command, tdc_dir);
+        strcat(full_command, wdd_dir);
         strcat(full_command, " ");
         strcat(full_command, filename);
         strcat(full_command, " ");
@@ -81,9 +81,6 @@ static int tdc_handler(request_rec *r)
         ap_send_fd(file, r, 0, r->finfo.size, &readBytes);
         apr_file_close(file);
     }
-    
-    
-    
     // Let Apache know that we responded to this request.
     return OK;
 }
