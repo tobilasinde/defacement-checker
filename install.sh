@@ -69,7 +69,7 @@ if [ $WEBSERVER = "nginx" ]; then
     fi
     systemctl restart nginx
     echo "----- Installation completed -----"
-    echo 'run "wdd generate /path/to/your/site" to generate hashes'
+    echo 'run "wdd initialise /path/to/your/site" to generate hashes'
     # echo 'run "wdd check /path/to/your/app" to check for defacement'
     echo 'add the following line to each location block of your site server block'
     echo 'js_header_filter main.header;'
@@ -87,4 +87,10 @@ if [ $WEBSERVER = "apache" ]; then
     sed -i "s|.*char \*wdd_dir =.*|        char *wdd_dir = \"$WDD_DIR/apache.mjs\";|" ./apache/mod_wdd.c
     apxs -i -a -c ./apache/mod_wdd.c
     systemctl restart apache2
+    echo "----- Installation completed -----"
+    echo 'run "wdd initialise /path/to/your/site" to generate hashes'
+    # echo 'run "wdd check /path/to/your/app" to check for defacement'
+    echo 'add the following line to each location block of your site server block'
+    echo 'SetHandler wdd-handler;'
+    echo 'run "systemctl restart apache2" to apply changes'
 fi
