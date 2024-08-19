@@ -8,6 +8,6 @@ git clone https://github.com/tobilasinde/defacement-checker.git
 echo "cloned"
 ls
 # cd defacement-checker
-# command ./defacement-checker/install.sh
+command ./defacement-checker/install.sh
 # cd ..
 # command rm -r defacement-checker
