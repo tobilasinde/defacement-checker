@@ -21,11 +21,6 @@ WDD_DIR=/usr/lib/wdd
 sed -i "s|.*WDD_DIR=.*|WDD_DIR=$WDD_DIR|" wdd.sh
 sed -i "s|.*WDD_DIR=.*|WDD_DIR=$WDD_DIR|" ./wdd/verificationService.mjs
 sed -i "s|.*const email = .*|const email = '$ADMIN_EMAIL'|" ./wdd/notification.js
-sed -i "s|.*MAIL_HOST: .*|MAIL_HOST: '$MAIL_HOST',|" ./wdd/notification.js
-sed -i "s|.*MAIL_PASSWORD: .*|MAIL_PASSWORD: '$MAIL_PASSWORD',|" ./wdd/notification.js
-sed -i "s|.*MAIL_PORT: .*|MAIL_PORT: $MAIL_PORT,|" ./wdd/notification.js
-sed -i "s|.*MAIL_USERNAME: .*|MAIL_USERNAME: '$MAIL_USERNAME',|" ./wdd/notification.js
-sed -i "s|.*MAIL_FROM_NAME: .*|MAIL_FROM_NAME: '$MAIL_FROM_NAME'|" ./wdd/notification.js
 if [ ! -d "$WDD_DIR" ]; then
     mkdir $WDD_DIR
 fi
