@@ -6,11 +6,6 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
 fi
 WEBSERVER=""
 ADMIN_EMAIL=""
-MAIL_HOST=""
-MAIL_PASSWORD=""
-MAIL_PORT=""
-MAIL_USERNAME=""
-MAIL_FROM_NAME=""
 if [ $# -ge 1 ] && [ -n "$1" ]; then
    WEBSERVER=$1
 fi
@@ -21,26 +16,6 @@ done
 while [ -z $ADMIN_EMAIL ]
 do
     read -p "Enter the server admin email: " ADMIN_EMAIL
-done
-while [ -z $MAIL_HOST ]
-do
-    read -p "Enter your mail host: " MAIL_HOST
-done
-while [ -z $MAIL_PASSWORD ]
-do
-    read -p "Enter your mail password: " MAIL_PASSWORD
-done
-while [ -z $MAIL_PORT ]
-do
-    read -p "Enter your mail port number: " MAIL_PORT
-done
-while [ -z $MAIL_USERNAME ]
-do
-    read -p "Enter your mail username: " MAIL_USERNAME
-done
-while [ -z $MAIL_FROM_NAME ]
-do
-    read -p "Enter your mail from name: " MAIL_FROM_NAME
 done
 WDD_DIR=/usr/lib/wdd
 sed -i "s|.*WDD_DIR=.*|WDD_DIR=$WDD_DIR|" wdd.sh
