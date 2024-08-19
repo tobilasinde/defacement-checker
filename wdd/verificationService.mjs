@@ -6,12 +6,15 @@ const verificationService = (root, filename, file_content) => {
     const hash_file = root.replace(/\//g, '_')
     const file_path = `${WDD_DIR}/hashes/${hash_file}.json`
     let initalHash
-    if (fs.existsSync(file_path) && fs.existsSync(filename)) {
+    if (fs.existsSync(file_path)) {
         //get stored hash
-        var file = fs.readFileSync(file_path)
+        let file = fs.readFileSync(file_path)
         file = file.toString()
         file = JSON.parse(file)
-        if (file[filename]) initalHash = file[filename]
+        if (file[filename]) {
+            initalHash = file[filename]
+            if (!fs.existsSync(filename)) return 'FILE NOT FOUND'
+        }
         else return 'ILLEGAL FILE'
 
         //compare stored hash with resource hash
@@ -25,7 +28,7 @@ const verificationService = (root, filename, file_content) => {
             const hash = generateHash(file)
             if (hash === initalHash) return 'TRUE'
             else return 'ALTERED FILE'
-        }
-    } else return 'UNINTIALISED WEBSITE'
+        } else return 'UNINITIALISED WEBSITE'
+    } else return 'UNINITIALISED WEBSITE'
 }
 export default verificationService

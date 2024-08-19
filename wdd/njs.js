@@ -13,7 +13,7 @@ function verify(r, data, flag) {
 }
 function header(r) {
     const response = verificationService(r.variables.document_root, r.variables.request_filename)
-    if (!['TRUE', 'UNINTIALISED WEBSITE'].includes(response)) {
+    if (!['TRUE', 'UNINITIALISED WEBSITE'].includes(response)) {
         console.error(`${r.variables.request_filename} has been modified`)
         r.status = 403
         r.headersOut['Resource-Status'] = response

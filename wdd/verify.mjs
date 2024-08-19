@@ -22,7 +22,7 @@ const verify = () => {
         }
         fileCheck = JSON.parse(file.toString())
     } else {
-        error = 'UNINTIALISED WEBSITE'
+        error = 'UNINITIALISED WEBSITE'
         console.warn(error)
         sendMail()
         return error
