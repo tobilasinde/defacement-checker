@@ -1,4 +1,4 @@
-import { sendEmail } from "./notification";
+import { sendEmail } from "./notification.js";
 import verificationService from "./verificationService.mjs";
 
 const root = process.argv[2].split(process.argv[3])[0]
