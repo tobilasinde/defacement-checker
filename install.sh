@@ -11,9 +11,9 @@ MAIL_PASSWORD=""
 MAIL_PORT=""
 MAIL_USERNAME=""
 MAIL_FROM_NAME=""
-if [ $# -ge 1 ] && [ -n "$1" ]; then
-    WEBSERVER=$1
-fi
+#if [ $# -ge 1 ] && [ -n "$1" ]; then
+#    WEBSERVER=$1
+#fi
 while [ -z $WEBSERVER ] || [ ! $WEBSERVER = "nginx" -a ! $WEBSERVER = "apache" ]
 do
     read -p "Webserver[ nginx/apache ]: " WEBSERVER
