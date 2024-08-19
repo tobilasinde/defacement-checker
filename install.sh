@@ -49,7 +49,7 @@ if [ $WEBSERVER = "nginx" ]; then
     curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
     | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
     echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
-    http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" \
+    http://nginx.org/packages/$(awk -F= '/^ID=/{print $2}' /etc/os-release) `lsb_release -cs` nginx" \
     | tee /etc/apt/sources.list.d/nginx.list
     apt update
     apt-get install -y nginx-module-njs-dbg
