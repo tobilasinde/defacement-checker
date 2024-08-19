@@ -5,9 +5,9 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     exit
 fi
 git clone https://github.com/tobilasinde/defacement-checker.git
-echo "cloned"
+echo "cloned2"
 ls
 # cd defacement-checker
-command ./defacement-checker/install.sh
+bash ./defacement-checker/install.sh
 # cd ..
 # command rm -r defacement-checker
