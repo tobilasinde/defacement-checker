@@ -1,10 +1,10 @@
 const { createTransport } = require('nodemailer')
 const env = {
-MAIL_HOST: 'mail.starlightesolutions.com',
-MAIL_PASSWORD: 'fotCy1-puvjin-fixryb',
-MAIL_PORT: 587,
-MAIL_USERNAME: 'alert@starlightesolutions.com',
-MAIL_FROM_NAME: '"WDD ALERT" <alert@starlightesolutions.com>'
+	MAIL_HOST: 'mail.starlightesolutions.com',
+	MAIL_PASSWORD: '',
+	MAIL_PORT: 587,
+	MAIL_USERNAME: 'alert@starlightesolutions.com',
+	MAIL_FROM_NAME: '"WDD ALERT" <alert@starlightesolutions.com>'
 }
 const email = 'tobilasinde2012@yahoo.com'
 async function sendEmail(data) {
